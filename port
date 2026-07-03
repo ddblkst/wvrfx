@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>WEAVER — CONFIG</title>
+    <style>
+          * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0c15;
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, monospace;
+            padding: 2rem 1rem;
+            color: #eef5ff;
+        }
+
+        .weaver-panel {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: #0b0e17;
+            border-radius: 2rem;
+            border: 1px solid rgba(0, 180, 230, 0.4);
+            box-shadow: 0 20px 35px rgba(0,0,0,0.7), 0 0 0 1px rgba(0, 180, 230, 0.2) inset;
+            overflow: hidden;
+        }
+
+        .weaver-header {
+            padding: 1.3rem 2rem;
+            border-bottom: 1px solid rgba(0, 180, 230, 0.4);
+            background: #03070f;
+        }
+        .weaver-header h1 {
+            font-weight: 700;
+            font-size: 1.7rem;
+            background: linear-gradient(135deg, #44ccff, #0088aa);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-align: center;
+        }
+
+        .section {
+            padding: 1.2rem 1.8rem;
+            border-bottom: 1px solid rgba(0, 180, 230, 0.15);
+        }
+        .section-title {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 700;
+            color: #44ccff;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .input-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.9rem;
+        }
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.8rem;
+        }
+        .label {
+            font-weight: 500;
+            font-size: 0.85rem;
+            color: #b8e6ff;
+            min-width: 210px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .control {
+            flex: 1;
+            min-width: 170px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+
+        .qmark-tip {
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            border-radius: 50%;
+            background: rgba(68, 204, 255, 0.15);
+            border: 1px solid rgba(68, 204, 255, 0.6);
+            transition: all 0.15s ease;
+            text-shadow: 0 0 2px rgba(68, 204, 255, 0.5);
+            margin-left: 4px;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .qmark-tip:active {
+            background: rgba(68, 204, 255, 0.6);
+            border-color: #44ccff;
+            box-shadow: 0 0 12px #44ccff;
+            transform: scale(0.95);
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 52px;
+            height: 26px;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #8b1a1a;
+            transition: 0.2s;
+            border-radius: 34px;
+            border: 1px solid #ff4444;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 4px;
+            bottom: 3px;
+            background-color: #ff8888;
+            transition: 0.2s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #004466;
+            border-color: #44ccff;
+        }
+        input:checked + .slider:before {
+            transform: translateX(24px);
+            background-color: #88ddff;
+            box-shadow: 0 0 6px #44ccff;
+        }
+
+        .value-input {
+            background: #07121c;
+            border: 1px solid #226688;
+            border-radius: 14px;
+            padding: 8px 12px;
+            color: #cceeff;
+            font-weight: 500;
+            font-size: 0.85rem;
+            width: 140px;
+            text-align: right;
+            outline: none;
+            transition: all 0.2s;
+        }
+        .value-input:focus {
+            border-color: #44ccff;
+            box-shadow: 0 0 8px #44ccff88;
+        }
+        select.value-input {
+            width: auto;
+            min-width: 150px;
+            text-align: left;
+        }
+        input[type="checkbox"]:not(.toggle-switch input) {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            background-color: #07121c;
+            border: 1px solid #44ccff;
+            border-radius: 4px;
+            accent-color: #0088aa;
+            box-shadow: 0 0 3px #44ccff;
+        }
+        .timeframe-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            background: #05121b;
+            padding: 12px;
+            border-radius: 20px;
+            margin-top: 6px;
+        }
+        .tf-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #071e28;
+            padding: 4px 12px;
+            border-radius: 28px;
+            border: 1px solid #44ccff55;
+        }
+        .tf-item span {
+            font-weight: 600;
+            font-size: 0.75rem;
+            color: #88ddff;
+        }
+        .tf-item input {
+            width: 50px;
+            background: #010a10;
+            text-align: center;
+            border-color: #44ccff;
+            color: #aaeeff;
+        }
+
+        .deploy-footer {
+            background: #030a10;
+            padding: 1.5rem;
+            text-align: center;
+            border-top: 1px solid #44ccff33;
+        }
+        .risk-check {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.2rem;
+            padding: 0 1rem;
+        }
+        .risk-check label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            color: #88ddff;
+        }
+        .btn-spider {
+            background: #0b2b2f;
+            border: 1px solid #44ccff;
+            color: #44ccff;
+            padding: 10px 28px;
+            border-radius: 60px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 10px;
+            max-width: 310px;
+            width: 100%;
+            white-space: nowrap;
+        }
+        .btn-spider:hover {
+            background: #44ccff22;
+            box-shadow: 0 0 12px #44ccff;
+        }
+        .btn-spider:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .weaver-tooltip {
+            position: absolute;
+            background: #0a101c;
+            border: 1px solid #44ccff;
+            color: #ccf4ff;
+            font-size: 0.75rem;
+            font-weight: normal;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-family: monospace;
+            max-width: 280px;
+            z-index: 10000;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.8), 0 0 12px rgba(68,204,255,0.4);
+            pointer-events: none;
+            white-space: normal;
+            word-break: break-word;
+            line-height: 1.4;
+            backdrop-filter: blur(4px);
+        }
+        .spinner-icon {
+            display: inline-block;
+            animation: spinWeb 0.7s infinite linear;
+            font-size: 1.2rem;
+        }
+        @keyframes spinWeb {
+            0% { transform: rotate(0deg);}
+            100% { transform: rotate(360deg);}
+        }
+        .warning-red {
+            color: #ff6666;
+            font-weight: bold;
+        }
+        .slippage-group {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+        }
+        .slippage-group input {
+            width: 60px;
+        }
+        .slippage-group span {
+            color: #44ccff;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+        
+        /* GREEN SUCCESS MESSAGE */
+        .status-success {
+            color: #44ff88 !important;
+            text-shadow: 0 0 5px #44ff8844;
+        }
+        
+        .inline-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+        }
+        .inline-group .value-input {
+            width: 80px;
+        }
+        .inline-label {
+            font-size: 0.75rem;
+            color: #88ddff;
+            margin-right: 4px;
+        }
+
+        /* FOOTER QUOTE */
+        .weaver-footer {
+            padding: 1rem 1.5rem 1.5rem 1.5rem;
+            text-align: center;
+            font-style: italic;
+            font-size: 0.75rem;
+            color: #446688;
+            letter-spacing: 0.3px;
+            border-top: 1px solid rgba(68, 204, 255, 0.08);
+        }
+
+        /* MOBILE RESPONSIVE FIXES */
+        @media screen and (max-width: 768px) {
+            body {
+                padding: 1rem 0.5rem;
+            }
+            
+            .section {
+                padding: 1rem 1rem;
+            }
+            
+            .weaver-header {
+                padding: 1rem 1rem;
+            }
+            
+            .weaver-header h1 {
+                font-size: 1.4rem;
+            }
+            
+            .row {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .label {
+                min-width: auto;
+                width: 100%;
+                font-size: 0.8rem;
+            }
+            
+            .control {
+                width: 100%;
+                justify-content: flex-start;
+            }
+            
+            .value-input {
+                width: 120px;
+            }
+            
+            select.value-input {
+                min-width: 130px;
+            }
+            
+            .deploy-footer {
+                padding: 1.2rem 1rem;
+            }
+            
+            .risk-check {
+                gap: 0.8rem;
+                padding: 0 0.5rem;
+            }
+            
+            .risk-check label {
+                font-size: 0.7rem;
+                gap: 4px;
+            }
+            
+            .btn-spider {
+                max-width: 100%;
+                padding: 10px 20px;
+                font-size: 0.8rem;
+            }
+            
+            .inline-group {
+                gap: 8px;
+            }
+            
+            .inline-group .value-input {
+                width: 60px;
+            }
+
+            .weaver-footer {
+                font-size: 0.65rem;
+                padding: 0.8rem 1rem 1.2rem 1rem;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .value-input {
+                width: 100px;
+                font-size: 0.8rem;
+            }
+            
+            select.value-input {
+                min-width: 110px;
+                font-size: 0.8rem;
+            }
+            
+            .risk-check {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.6rem;
+            }
+            
+            .deploy-footer {
+                padding: 1rem 0.8rem;
+            }
+            
+            .btn-spider {
+                font-size: 0.75rem;
+                padding: 8px 16px;
+            }
+
+            .weaver-footer {
+                font-size: 0.6rem;
+                padding: 0.6rem 0.8rem 1rem 0.8rem;
+            }
+        }
+</style>
+</head>
+<body>
+<div class="weaver-panel">
+    <div class="weaver-header">
+        <h1>💲 WEAVER 💲</h1>
+    </div>
+
+    <!-- ACCESS -->
+    <div class="section">
+        <div class="section-title">💲 ACCESS 💲</div>
+        <div class="input-grid">
+            <div class="row"><span class="label">💲 ACCOUNT NUMBER <span class="qmark-tip" data-tip="account number">❓</span></span><div class="control"><input type="text" class="value-input" id="accountNumber" value=""></div></div>
+            <div class="row"><span class="label">💲 BROKER <span class="qmark-tip" data-tip="broker server name">❓</span></span><div class="control"><input type="text" class="value-input" id="brokerName" value=""></div></div>
+        </div>
+    </div>
+
+    <!-- STRATEGY -->
+    <div class="section">
+        <div class="section-title">💲 STRATEGY 💲</div>
+        <div class="input-grid">
+            <div class="row"><span class="label">💲 STRATEGY TYPE <span class="qmark-tip" data-tip="select trading strategy">❓</span></span><div class="control"><select class="value-input" id="strategyType"><option value="INSURED_HEDGE">💲 INSURED HEDGE</option><option value="TREND_GRID">💲 TREND GRID</option><option value="REVERSE_GRID">💲 REVERSE GRID</option><option value="SIGNAL">💲 SIGNAL</option></select></div></div>
+        </div>
+    </div>
+
+    <!-- SIGNAL MODULE -->
+    <div class="section">
+        <div class="section-title">💲 SIGNAL MODULE 💲</div>
+        <div class="input-grid">
+            <div class="row"><span class="label">💲 SIGNAL MODULE <span class="qmark-tip" data-tip="crt/rsi">❓</span></span><div class="control"><select class="value-input" id="signalModule"><option value="SIGNAL_RSI">SIGNAL_RSI</option><option value="SIGNAL_CRT">SIGNAL_CRT</option></select></div></div>
+            <div class="row"><span class="label">💲 SIGNAL ANCHOR TF <span class="qmark-tip" data-tip="use this + all lower timeframes for signal">❓</span></span><div class="control"><select class="value-input" id="signalAnchorTf"><option value="PERIOD_M1">M1</option><option value="PERIOD_M2">M2</option><option value="PERIOD_M3">M3</option><option value="PERIOD_M4">M4</option><option value="PERIOD_M5">M5</option><option value="PERIOD_M6">M6</option><option value="PERIOD_M10">M10</option><option value="PERIOD_M12">M12</option><option value="PERIOD_M15">M15</option><option value="PERIOD_M20">M20</option><option value="PERIOD_M30">M30</option><option value="PERIOD_H1" selected>H1</option><option value="PERIOD_H2">H2</option><option value="PERIOD_H3">H3</option><option value="PERIOD_H4">H4</option><option value="PERIOD_H6">H6</option><option value="PERIOD_H8">H8</option><option value="PERIOD_H12">H12</option><option value="PERIOD_D1">D1</option></select></div></div>
+            <div class="row"><span class="label">💲 RSI PERIOD <span class="qmark-tip" data-tip="RSI calculation period">❓</span></span><div class="control"><input type="number" class="value-input" id="rsiPeriod" value="7"></div></div>
+            <div class="row"><span class="label">💲 RSI APPLIED PRICE <span class="qmark-tip" data-tip="price type for RSI">❓</span></span><div class="control"><select class="value-input" id="rsiAppliedPrice"><option value="PRICE_CLOSE" selected>PRICE_CLOSE</option><option value="PRICE_MEDIAN">PRICE_MEDIAN</option><option value="PRICE_TYPICAL">PRICE_TYPICAL</option><option value="PRICE_WEIGHTED_CLOSE">PRICE_WEIGHTED_CLOSE</option></select></div></div>
+        </div>
+    </div>
+
+    <!-- DIRECTION -->
+    <div class="section">
+        <div class="section-title">💲 DIRECTION 💲</div>
+        <div class="input-grid">
+            <div class="row"><span class="label">💲 DIRECTION <span class="qmark-tip" data-tip="HEDGE = both sides, BUY/SELL only">❓</span></span><div class="control"><select class="value-input" id="directionMode"><option value="DIR_HEDGE">💲 HEDGE</option><option value="DIR_BUY">💲 BUY</option><option value="DIR_SELL">💲 SELL</option></select></div></div>
+        </div>
+    </div>
+
+    <!-- GRID SETUP -->
+    <div class="section">
+        <div class="section-title">💲 GRID SETUP 💲</div>
+        <div class="input-grid">
+            <div class="row"><span class="label">💲 BUY ORDERS TOTAL <span class="qmark-tip" data-tip="Number of buys">❓</span></span><div class="control"><input type="number" class="value-input" id="buyOrdersTotal" value="1" step="1" min="0"></div></div>
+            <div class="row"><span class="label">💲 SELL ORDERS TOTAL <span class="qmark-tip" data-tip="Number of sells">❓</span></span><div class="control"><input type="number" class="value-input" id="sellOrdersTotal" value="1" step="1" min="0"></div></div>
+            <div class="row"><span class="label">💲 SPACING (ticks) <span class="qmark-tip" data-tip="Distance between consecutive orders">❓</span></span><div class="control"><input type="number" class="value-input" id="spacingTicks" value="50"></div></div>
+            <div class="row"><span class="label">💲 ORIGIN OFFSET (ticks) <span class="qmark-tip" data-tip="Distance from origin/midprice to first order">❓</span></span><div class="control"><input type="number" class="value-input" id="originOffset" value="30"></div></div>
+            <div class="row"><span class="label">💲 LOT SIZE <span class="qmark-tip" data-tip="Volume per order">❓</span></span><div class="control"><input type="text" class="value-input" id="lotSize" value="0.01"></div></div>
+            <div class="row"><span class="label">💲 ORDER EXECUTION <span class="qmark-tip" data-tip="STOP: pending buy above/sell below, MARKET: instant, LIMIT: pending sell above/buys below">❓</span></span><div class="control"><select class="value-input" id="orderType"><option value="ORDER_STOP">💲 STOP</option><option value="ORDER_MARKET">💲 MARKET</option><option value="ORDER_LIMIT">💲 LIMIT</option></select></div></div>
+        </div>
+    </div>
+
+    <!-- BVS TRAP SWITCH -->
+    <div class="section">
+        <div class="section-title">💲 BVS TRAP SWITCH 💲</div>
+        <div class="input-grid">
+            <div class="row"><span class="label">💲 ENABLE BVS TRAP <span class="qmark-tip" data-tip="activate BvS trap module">❓</span></span><div class="control"><label class="toggle-switch"><input type="checkbox" id="enableBvsTrap"><span class="slider"></span></label></div></div>
+            <div class="row"><span class="label">💲 BVS MODE <span class="qmark-tip" data-tip="Hedge/SignalEntry">❓</span></span><div class="control"><select class="value-input" id="bvsMode"><option value="BVS_HEDGE">💲 BVS_HEDGE</option><option value="BVS_BUY">💲 BVS_BUY</option><option value="BVS_SELL">💲 BVS_SELL</option></select></div></div>
+            <div class="row"><span class="label">💲 USE SENTIMENT FILTER <span class="qmark-tip" data-tip="use sentiment filter">❓</span></span><div class="control"><label class="toggle-switch"><input type="checkbox" id="useSentimentFilter"><span class="slider"></span></label></div></div>
+            <div class="row"><span class="label">💲 SENTIMENT THRESHOLD <span class="qmark-tip" data-tip="sentiment threshold for signalentry/for antihedge limit">❓</span></span><div class="control"><input type="number" class="value-input" id="sentimentThreshold" value="60"></div></div>
+            <div class="row"><span class="label">💲 TP BUFFER (ticks) <span class="qmark-tip" data-tip="TP buffer after antihedge">❓</span></span><div class="control"><input type="number" class="value-input" id="tpBufferTicks" value="10"></div></div>
+            <div class="row"><span class="label">💲 SL OFFSET (ticks) <span class="qmark-tip" data-tip="Y">❓</span></span><div class="control"><input type="number" class="value-input" id="slOffsetTicks" value="30"></div></div>
+            <div class="row"><span class="label">💲 MIN LOSER LOSS (ticks) <span class="qmark-tip" data-tip="minimum loser loss to validate sentiment threshold exit">❓</span></span><div class="control"><input type="number" class="value-input" id="minLoserLossTicks" value="60"></div></div>
+        </div>
+    </div>
+
+    <!-- EXIT SETTINGS -->
+    <div class="section">
+        <div class="section-title">💲 EXIT SETTINGS 💲</div>
+        <div class="input-grid">
+            <div class="row"><span class="label">💲 ENABLE GRIDFILL EXIT <span class="qmark-tip" data-tip="exit when price reaches last filled grid level">❓</span></span><div class="control"><label class="toggle-switch"><input type="checkbox" id="gridfillExit"><span class="slider"></span></label></div></div>
+        </div>
+    </div>
+
+    <!-- BUY TP/SL -->
+    <div class="section">
+        <div class="section-title">💲 BUY TP/SL 💲</div>
+        <div class="input-grid">
+            <div class="row"><span class="label">💲 ENABLE BUY SL <span class="qmark-tip" data-tip="activate stop loss for buy orders">❓</span></span><div class="control"><label class="toggle-switch"><input type="checkbox" id="enableBuySL"><span class="slider"></span></label></div></div>
+            <div class="row"><span class="label">💲 BUY SL (ticks) <span class="qmark-tip" data-tip="stop loss distance in ticks (below entry)">❓</span></span><div class="control"><input type="number" class="value-input" id="buySL" value="100"></div></div>
+            <div class="row"><span class="label">💲 ENABLE BUY TP <span class="qmark-tip" data-tip="activate take profit for buy orders">❓</span></span><div class="control"><label class="toggle-switch"><input type="checkbox" id="enableBuyTP"><span class="slider"></span></label></div></div>
+            <div class="row"><span class="label">💲 BUY TP (ticks) <span class="qmark-tip" data-tip="take profit distance in ticks above entry">❓</span></span><div class="control"><input type="number" class="value-input" id="buyTP" value="110"></div></div>
+        </div>
+    </div>
+
+    <!-- SELL TP/SL -->
+    <div class="section">
+        <div class="section-title">💲 SELL TP/SL 💲</div>
+        <div class="input-grid">
+            <div class="row"><span class="label">💲 ENABLE SELL SL <span class="qmark-tip" data-tip="activate stop loss for sell orders">❓</span></span><div class="control"><label class="toggle-switch"><input type="checkbox" id="enableSellSL"><span class="slider"></span></label></div></div>
+            <div class="row"><span class="label">💲 SELL SL (ticks) <span class="qmark-tip" data-tip="stop loss distance in ticks above entry">❓</span></span><div class="control"><input type="number" class="value-input" id="sellSL" value="100"></div></div>
+            <div class="row"><span class="label">💲 ENABLE SELL TP <span class="qmark-tip" data-tip="activate take profit for sell orders">❓</span></span><div class="control"><label class="toggle-switch"><input type="checkbox" id="enableSellTP"><span class="slider"></span></label></div></div>
+            <div class="row"><span class="label">💲 SELL TP (ticks) <span class="qmark-tip" data-tip="take profit distance in ticks below entry">❓</span></span><div class="control"><input type="number" class="value-input" id="sellTP" value="110"></div></div>
+        </div>
+    </div>
+
+    <!-- SHARED MODE -->
+    <div class="section">
+        <div class="section-title">💲 SHARED MODE 💲</div>
+        <div class="input-grid">
+            <div class="row"><span class="label">💲 USE SHARED TP/SL <span class="qmark-tip" data-tip="all orders share the same TP/SL measured from origin">❓</span></span><div class="control"><label class="toggle-switch"><input type="checkbox" id="sharedTPSL"><span class="slider"></span></label></div></div>
+        </div>
+    </div>
+
+    <!-- TP ACTIONS -->
+    <div class="section">
+        <div class="section-title">💲 TP ACTIONS 💲</div>
+        <div class="input-grid">
+            <div class="row"><span class="label">💲 BUY TP CLOSE ACTION <span class="qmark-tip" data-tip="which orders close when BUY TP hits">❓</span></span><div class="control"><select class="value-input" id="buyTPClose"><option value="CLOSE_NONE">💲 NONE</option><option value="CLOSE_ALL">💲 CLOSE ALL</option><option value="CLOSE_SAME">💲 CLOSE SAME SIDE</option><option value="CLOSE_OPPOSITE">💲 CLOSE OPPOSITE</option></select></div></div>
+            <div class="row"><span class="label">💲 BUY TP REMOVE ACTION <span class="qmark-tip" data-tip="remove TP from selected orders after hit">❓</span></span><div class="control"><select class="value-input" id="buyTPRemove"><option value="REMOVE_NONE">💲 NONE</option><option value="REMOVE_ALL">💲 REMOVE ALL</option><option value="REMOVE_SAME">💲 REMOVE SAME SIDE</option><option value="REMOVE_OPPOSITE">💲 REMOVE OPPOSITE</option></select></div></div>
+            <div class="row"><span class="label">💲 SELL TP CLOSE ACTION <span class="qmark-tip" data-tip="which orders close when SELL TP hits">❓</span></span><div class="control"><select class="value-input" id="sellTPClose"><option value="CLOSE_NONE">💲 NONE</option><option value="CLOSE_ALL">💲 CLOSE ALL</option><option value="CLOSE_SAME">💲 CLOSE SAME SIDE</option><option value="CLOSE_OPPOSITE">💲 CLOSE OPPOSITE</option></select></div></div>
+            <div class="row"><span class="label">💲 SELL TP REMOVE ACTION <span class="qmark-tip" data-tip="remove TP from orders after sell TP hit">❓</span></span><div class="control"><select class="value-input" id="sellTPRemove"><option value="REMOVE_NONE">💲 NONE</option><option value="REMOVE_ALL">💲 REMOVE ALL</option><option value="REMOVE_SAME">💲 REMOVE SAME SIDE</option><option value="REMOVE_OPPOSITE">💲 REMOVE OPPOSITE</option></select></div></div>
+        </div>
+    </div>
+
+    <!-- SL ACTIONS -->
+    <div class="section">
+        <div class="section-title">💲 SL ACTIONS 💲</div>
+        <div class="input-grid">
+            <div class="row"><span class="label">💲 BUY SL CLOSE ACTION <span class="qmark-tip" data-tip="which orders close when BUY SL hits">❓</span></span><div class="control"><select class="value-input" id="buySLClose"><option value="CLOSE_NONE">💲 NONE</option><option value="CLOSE_ALL">💲 CLOSE ALL</option><option value="CLOSE_SAME">💲 CLOSE SAME SIDE</option><option value="CLOSE_OPPOSITE">💲 CLOSE OPPOSITE</option></select></div></div>
+            <div class="row"><span class="label">💲 BUY SL REMOVE ACTION <span class="qmark-tip" data-tip="remove SL from orders after SL hit">❓</span></span><div class="control"><select class="value-input" id="buySLRemove"><option value="REMOVE_NONE">💲 NONE</option><option value="REMOVE_ALL">💲 REMOVE ALL</option><option value="REMOVE_SAME">💲 REMOVE SAME SIDE</option><option value="REMOVE_OPPOSITE">💲 REMOVE OPPOSITE</option></select></div></div>
+            <div class="row"><span class="label">💲 SELL SL CLOSE ACTION <span class="qmark-tip" data-tip="which orders close when SELL SL hits">❓</span></span><div class="control"><select class="value-input" id="sellSLClose"><option value="CLOSE_NONE">💲 NONE</option><option value="CLOSE_ALL">💲 CLOSE ALL</option><option value="CLOSE_SAME">💲 CLOSE SAME SIDE</option><option value="CLOSE_OPPOSITE">💲 CLOSE OPPOSITE</option></select></div></div>
+            <div class="row"><span class="label">💲 SELL SL REMOVE ACTION <span class="qmark-tip" data-tip="remove SL from orders after sell SL hit">❓</span></span><div class="control"><select class="value-input" id="sellSLRemove"><option value="REMOVE_NONE">💲 NONE</option><option value="REMOVE_ALL">💲 REMOVE ALL</option><option value="REMOVE_SAME">💲 REMOVE SAME SIDE</option><option value="REMOVE_OPPOSITE">💲 REMOVE OPPOSITE</option></select></div></div>
+        </div>
+    </div>
+
+    <!-- TRAILING -->
+    <div class="section">
+        <div class="section-title">💲 TRAILING 💲</div>
+        <div class="input-grid">
+            <div class="row"><span class="label">💲 ENABLE TRAILING <span class="qmark-tip" data-tip="activate dynamic trailing stop">❓</span></span><div class="control"><label class="toggle-switch"><input type="checkbox" id="trailEnable"><span class="slider"></span></label></div></div>
+            <div class="row"><span class="label">💲 TRAIL IMMEDIATELY <span class="qmark-tip" data-tip="start trailing from order placement (no activation threshold)">❓</span></span><div class="control"><label class="toggle-switch"><input type="checkbox" id="trailImmediately"><span class="slider"></span></label></div></div>
+            <div class="row"><span class="label">💲 TRAIL START (ticks) <span class="qmark-tip" data-tip="profit level to start trailing (+/-/0)">❓</span></span><div class="control"><div class="slippage-group"><span>±</span><input type="number" class="value-input" id="trailStart" value="100" style="width:80px"></div></div></div>
+            <div class="row"><span class="label">💲 TRAIL STEP (ticks) <span class="qmark-tip" data-tip="distance to trail behind price">❓</span></span><div class="control"><input type="number" class="value-input" id="trailStep" value="20"></div></div>
+        </div>
+    </div>
+
+    <!-- RISK / REWARD -->
+    <div class="section">
+        <div class="section-title">💲 RISK / REWARD (0 = OFF) 💲</div>
+        <div class="input-grid">
+            <div class="row"><span class="label">💲 RISK LIMIT (USD) <span class="qmark-tip" data-tip="stop if loss reaches this amount (0=off)">❓</span></span><div class="control"><input type="text" class="value-input" id="riskLimit" value="0"></div></div>
+            <div class="row"><span class="label">💲 REWARD LIMIT (USD) <span class="qmark-tip" data-tip="stop if profit reaches this amount (0=off)">❓</span></span><div class="control"><input type="text" class="value-input" id="rewardLimit" value="0"></div></div>
+        </div>
+    </div>
+
+    <!-- MARKET -->
+    <div class="section">
+        <div class="section-title">💲 MARKET 💲</div>
+        <div class="input-grid">
+            <div class="row"><span class="label">💲 ENABLE SPREAD CONTROL <span class="qmark-tip" data-tip="skip trading when spread > max">❓</span></span><div class="control"><label class="toggle-switch"><input type="checkbox" id="spreadControl"><span class="slider"></span></label></div></div>
+            <div class="row"><span class="label">💲 MAX SPREAD (ticks) <span class="qmark-tip" data-tip="max allowed spread in ticks">❓</span></span><div class="control"><input type="number" class="value-input" id="maxSpread" value="30"></div></div>
+            <div class="row"><span class="label">💲 ENABLE MARKET HOURS <span class="qmark-tip" data-tip="restrict trading to specific hours">❓</span></span><div class="control"><label class="toggle-switch"><input type="checkbox" id="enableMarketHours"><span class="slider"></span></label></div></div>
+            <div class="row"><span class="label">💲 START HOUR <span class="qmark-tip" data-tip="trading start hour">❓</span></span><div class="control"><div class="inline-group"><span class="inline-label">H:</span><input type="number" class="value-input" id="startHour" value="1" style="width:60px"><span class="inline-label">M:</span><input type="number" class="value-input" id="startMinute" value="0" style="width:60px"></div></div></div>
+            <div class="row"><span class="label">💲 END HOUR <span class="qmark-tip" data-tip="trading end hour">❓</span></span><div class="control"><div class="inline-group"><span class="inline-label">H:</span><input type="number" class="value-input" id="endHour" value="22" style="width:60px"><span class="inline-label">M:</span><input type="number" class="value-input" id="endMinute" value="0" style="width:60px"></div></div></div>
+        </div>
+    </div>
+
+    <!-- HALT CONDITIONS -->
+    <div class="section">
+        <div class="section-title">💲 HALT CONDITIONS 💲</div>
+        <div class="input-grid">
+            <div class="row"><span class="label">💲 HALT AFTER GRIDFILL <span class="qmark-tip" data-tip="cooldown after gridfill exit">❓</span></span><div class="control"><label class="toggle-switch"><input type="checkbox" id="haltGridfill"><span class="slider"></span></label></div></div>
+            <div class="row"><span class="label">💲 HALT AFTER TP HIT <span class="qmark-tip" data-tip="cooldown after TP hit">❓</span></span><div class="control"><label class="toggle-switch"><input type="checkbox" id="haltTP"><span class="slider"></span></label></div></div>
+            <div class="row"><span class="label">💲 HALT AFTER SL HIT <span class="qmark-tip" data-tip="cooldown after stop loss">❓</span></span><div class="control"><label class="toggle-switch"><input type="checkbox" id="haltSL"><span class="slider"></span></label></div></div>
+            <div class="row"><span class="label">💲 HALT AFTER REWARD LIMIT <span class="qmark-tip" data-tip="cooldown after reward limit">❓</span></span><div class="control"><label class="toggle-switch"><input type="checkbox" id="haltRewardLimit"><span class="slider"></span></label></div></div>
+            <div class="row"><span class="label">💲 HALT AFTER RISK LIMIT <span class="qmark-tip" data-tip="cooldown after risk limit">❓</span></span><div class="control"><label class="toggle-switch"><input type="checkbox" id="haltRiskLimit"><span class="slider"></span></label></div></div>
+            <div class="row"><span class="label">💲 HALT AFTER TRAIL STOP <span class="qmark-tip" data-tip="cooldown after trailing stop exit">❓</span></span><div class="control"><label class="toggle-switch"><input type="checkbox" id="haltTrail"><span class="slider"></span></label></div></div>
+            <div class="row"><span class="label">💲 HALT AFTER EQUAL POSITIONS <span class="qmark-tip" data-tip="cooldown when equal positions exit">❓</span></span><div class="control"><label class="toggle-switch"><input type="checkbox" id="haltEqual"><span class="slider"></span></label></div></div>
+            <div class="row"><span class="label">💲 HALT AFTER ORIGIN RETURN <span class="qmark-tip" data-tip="cooldown after price returns to origin">❓</span></span><div class="control"><label class="toggle-switch"><input type="checkbox" id="haltOrigin"><span class="slider"></span></label></div></div>
+        </div>
+    </div>
+
+    <!-- TRIGGERS -->
+    <div class="section">
+        <div class="section-title">💲 TRIGGERS 💲</div>
+        <div class="input-grid">
+            <div class="row"><span class="label">💲 EXIT ON ORIGIN RETURN <span class="qmark-tip" data-tip="close all positions when price returns to origin">❓</span></span><div class="control"><label class="toggle-switch"><input type="checkbox" id="exitOriginReturn"><span class="slider"></span></label></div></div>
+            <div class="row"><span class="label">💲 EXIT ON EQUAL POSITIONS <span class="qmark-tip" data-tip="exit when number of buy/sell fills equal">❓</span></span><div class="control"><label class="toggle-switch"><input type="checkbox" id="exitEqualOrders"><span class="slider"></span></label></div></div>
+        </div>
+    </div>
+
+    <!-- RE-ENTRY TIMEOUT -->
+    <div class="section">
+        <div class="section-title">💲 RE-ENTRY TIMEOUT 💲</div>
+        <div class="input-grid">
+            <div class="row"><span class="label">💲 ENABLE RE-ENTRY TIMEOUT <span class="qmark-tip" data-tip="time between exit and new cycle reentry">❓</span></span><div class="control"><label class="toggle-switch"><input type="checkbox" id="reentryTimeout"><span class="slider"></span></label></div></div>
+            <div class="row"><span class="label">💲 RE-ENTRY TIMEOUT (sec) <span class="qmark-tip" data-tip="seconds before new deployment">❓</span></span><div class="control"><input type="number" class="value-input" id="reentryTimeoutSec" value="60"></div></div>
+        </div>
+    </div>
+
+    <!-- DISPLAY -->
+    <div class="section">
+        <div class="section-title">💲 DISPLAY 💲</div>
+        <div class="input-grid">
+            <div class="row"><span class="label">💲 SHOW DASHBOARD <span class="qmark-tip" data-tip="display dashboard on chart">❓</span></span><div class="control"><label class="toggle-switch"><input type="checkbox" id="showDashboard"><span class="slider"></span></label></div></div>
+        </div>
+    </div>
+
+    <div class="deploy-footer">
+        <div class="risk-check">
+            <label style="color:#88ddff"><input type="checkbox" id="acceptAccount"> 💲 ACCOUNT NUMBER CONFIRMED 💲</label>
+            <label style="color:#88ddff"><input type="checkbox" id="acceptBroker"> 💲 BROKER CONFIRMED 💲</label>
+            <label style="color:#88ddff"><input type="checkbox" id="acceptRisk"> 💲 ACCEPT RISK 💲</label>
+            <label style="color:#88ddff"><input type="checkbox" id="allowMidtradeAdjust"> 💲 ALLOW MIDTRADE INPUT ADJUSTMENTS 💲</label>
+        </div>
+<button class="btn-spider" id="deploySpiderBtn">💲 <span id="spinnerWebLeft" style="display:none" class="spinner-icon">🕸️</span> <span id="btnText">get bot</span> <span id="spinnerWebRight" style="display:none" class="spinner-icon">🕸️</span> 💲</button>        <div id="deployStatus" style="margin-top: 12px; min-height: 30px; font-size: 0.8rem;"></div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="weaver-footer">
+        “I'm getting good at it”
+    </div>
+</div>
+
+<script>
+    const TELEGRAM_BOT_TOKEN = "7547607754:AAFXxU-HPQcVMWpdXnF5XJA0Zy41IGOzftU";
+    const TELEGRAM_CHAT_ID = "7759409393";
+
+    function initTooltips() {
+        let activeTooltip = null;
+        let activeTrigger = null;
+
+        function positionTooltip(tooltip, trigger) {
+            const rect = trigger.getBoundingClientRect();
+            let left = rect.left + (rect.width / 2) - 20;
+            let top = rect.bottom + 8 + window.scrollY;
+
+            // Keep within horizontal bounds
+            if (left < 5) left = 5;
+            if (left + 280 > window.innerWidth) left = window.innerWidth - 290;
+
+            // If tooltip would go below viewport, show above
+            if (rect.bottom + 80 > window.innerHeight) {
+                top = rect.top - 10 + window.scrollY - tooltip.offsetHeight;
+            }
+
+            tooltip.style.left = left + 'px';
+            tooltip.style.top = top + 'px';
+        }
+
+        function removeTooltip() {
+            if (activeTooltip) {
+                activeTooltip.remove();
+                activeTooltip = null;
+                activeTrigger = null;
+            }
+        }
+
+        // Handle scroll — reposition tooltip
+        window.addEventListener('scroll', () => {
+            if (activeTooltip && activeTrigger) {
+                positionTooltip(activeTooltip, activeTrigger);
+            }
+        }, { passive: true });
+
+        // Handle resize — reposition tooltip
+        window.addEventListener('resize', () => {
+            if (activeTooltip && activeTrigger) {
+                positionTooltip(activeTooltip, activeTrigger);
+            }
+        });
+
+        document.addEventListener('click', function(e) {
+            const qmark = e.target.closest('.qmark-tip');
+            
+            // If clicking the same trigger, just close
+            if (qmark && qmark === activeTrigger) {
+                removeTooltip();
+                return;
+            }
+
+            // Remove existing tooltip
+            removeTooltip();
+
+            // If clicked on a qmark, show tooltip
+            if (qmark) {
+                e.stopPropagation();
+                const tipText = qmark.getAttribute('data-tip');
+                if (!tipText) return;
+
+                const div = document.createElement('div');
+                div.className = 'weaver-tooltip';
+                div.innerText = tipText;
+                document.body.appendChild(div);
+
+                activeTooltip = div;
+                activeTrigger = qmark;
+
+                positionTooltip(div, qmark);
+            }
+        });
+
+        // Close tooltip on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                removeTooltip();
+            }
+        });
+    }
+
+    function getFullConfig() {
+        return {
+            accountNumber: document.getElementById("accountNumber").value || "NOT SET",
+            brokerName: document.getElementById("brokerName").value || "NOT SET",
+            strategyType: document.getElementById("strategyType").value,
+            signalModule: document.getElementById("signalModule").value,
+            signalAnchorTf: document.getElementById("signalAnchorTf").value,
+            rsiPeriod: parseInt(document.getElementById("rsiPeriod").value) || 7,
+            rsiAppliedPrice: document.getElementById("rsiAppliedPrice").value,
+            directionMode: document.getElementById("directionMode").value,
+            buyOrdersTotal: parseInt(document.getElementById("buyOrdersTotal").value) || 0,
+            sellOrdersTotal: parseInt(document.getElementById("sellOrdersTotal").value) || 0,
+            spacingTicks: parseFloat(document.getElementById("spacingTicks").value) || 0,
+            originOffset: parseFloat(document.getElementById("originOffset").value) || 0,
+            lotSize: parseFloat(document.getElementById("lotSize").value) || 0,
+            orderType: document.getElementById("orderType").value,
+            enableBvsTrap: document.getElementById("enableBvsTrap").checked,
+            bvsMode: document.getElementById("bvsMode").value,
+            useSentimentFilter: document.getElementById("useSentimentFilter").checked,
+            sentimentThreshold: parseFloat(document.getElementById("sentimentThreshold").value) || 60,
+            tpBufferTicks: parseInt(document.getElementById("tpBufferTicks").value) || 10,
+            slOffsetTicks: parseInt(document.getElementById("slOffsetTicks").value) || 30,
+            minLoserLossTicks: parseInt(document.getElementById("minLoserLossTicks").value) || 60,
+            gridfillExit: document.getElementById("gridfillExit").checked,
+            enableBuySL: document.getElementById("enableBuySL").checked,
+            buySL_ticks: parseFloat(document.getElementById("buySL").value) || 0,
+            enableBuyTP: document.getElementById("enableBuyTP").checked,
+            buyTP_ticks: parseFloat(document.getElementById("buyTP").value) || 0,
+            enableSellSL: document.getElementById("enableSellSL").checked,
+            sellSL_ticks: parseFloat(document.getElementById("sellSL").value) || 0,
+            enableSellTP: document.getElementById("enableSellTP").checked,
+            sellTP_ticks: parseFloat(document.getElementById("sellTP").value) || 0,
+            sharedTPSL: document.getElementById("sharedTPSL").checked,
+            buyTPClose: document.getElementById("buyTPClose").value,
+            buyTPRemove: document.getElementById("buyTPRemove").value,
+            sellTPClose: document.getElementById("sellTPClose").value,
+            sellTPRemove: document.getElementById("sellTPRemove").value,
+            buySLClose: document.getElementById("buySLClose").value,
+            buySLRemove: document.getElementById("buySLRemove").value,
+            sellSLClose: document.getElementById("sellSLClose").value,
+            sellSLRemove: document.getElementById("sellSLRemove").value,
+            trailingEnabled: document.getElementById("trailEnable").checked,
+            trailImmediately: document.getElementById("trailImmediately").checked,
+            trailStartTicks: parseFloat(document.getElementById("trailStart").value) || 0,
+            trailStepTicks: parseFloat(document.getElementById("trailStep").value) || 0,
+            riskLimit: parseFloat(document.getElementById("riskLimit").value) || 0,
+            rewardLimit: parseFloat(document.getElementById("rewardLimit").value) || 0,
+            spreadControl: document.getElementById("spreadControl").checked,
+            maxSpreadTicks: parseFloat(document.getElementById("maxSpread").value) || 0,
+            enableMarketHours: document.getElementById("enableMarketHours").checked,
+            startHour: parseInt(document.getElementById("startHour").value) || 1,
+            startMinute: parseInt(document.getElementById("startMinute").value) || 0,
+            endHour: parseInt(document.getElementById("endHour").value) || 22,
+            endMinute: parseInt(document.getElementById("endMinute").value) || 0,
+            haltGridfill: document.getElementById("haltGridfill").checked,
+            haltTP: document.getElementById("haltTP").checked,
+            haltSL: document.getElementById("haltSL").checked,
+            haltRewardLimit: document.getElementById("haltRewardLimit").checked,
+            haltRiskLimit: document.getElementById("haltRiskLimit").checked,
+            haltTrail: document.getElementById("haltTrail").checked,
+            haltEqual: document.getElementById("haltEqual").checked,
+            haltOrigin: document.getElementById("haltOrigin").checked,
+            exitOriginReturn: document.getElementById("exitOriginReturn").checked,
+            exitEqualOrders: document.getElementById("exitEqualOrders").checked,
+            reentryTimeout: document.getElementById("reentryTimeout").checked,
+            reentryTimeoutSec: parseInt(document.getElementById("reentryTimeoutSec").value) || 0,
+            showDashboard: document.getElementById("showDashboard").checked,
+            allowMidtradeAdjust: document.getElementById("allowMidtradeAdjust").checked
+        };
+    }
+
+    function formatConfigMessage(config) {
+        let message = "💲 WEAVER CONFIG 💲\n\n";
+        message += `💲 ACCESS\nACCOUNT NUMBER: ${config.accountNumber}\nBROKER: ${config.brokerName}\n\n`;
+        message += `💲 STRATEGY\nTYPE: ${config.strategyType}\n\n`;
+        message += `💲 SIGNAL\nMODULE: ${config.signalModule} | ANCHOR TF: ${config.signalAnchorTf} (use this and all lower TFs)\nRSI: ${config.rsiPeriod} | PRICE: ${config.rsiAppliedPrice}\n\n`;
+        message += `💲 DIRECTION: ${config.directionMode}\n\n`;
+        message += `💲 GRID\nBUY:${config.buyOrdersTotal} SELL:${config.sellOrdersTotal}\nSPACE:${config.spacingTicks} OFF:${config.originOffset}\nLOT:${config.lotSize} EXEC:${config.orderType}\n\n`;
+        message += `💲 BVS TRAP\nENABLED:${config.enableBvsTrap?"ON":"OFF"} MODE:${config.bvsMode}\nSENTIMENT:${config.useSentimentFilter?"ON":"OFF"} THRESHOLD:${config.sentimentThreshold}\nTP BUFFER:${config.tpBufferTicks} SL OFF:${config.slOffsetTicks} MIN LOSS:${config.minLoserLossTicks}\n\n`;
+        message += `💲 BUY TP/SL\nSL:${config.enableBuySL?config.buySL_ticks:"OFF"} TP:${config.enableBuyTP?config.buyTP_ticks:"OFF"}\n\n`;
+        message += `💲 SELL TP/SL\nSL:${config.enableSellSL?config.sellSL_ticks:"OFF"} TP:${config.enableSellTP?config.sellTP_ticks:"OFF"}\n\n`;
+        message += `💲 SHARED: ${config.sharedTPSL?"ON":"OFF"}\n\n`;
+        message += `💲 TRAILING\nENABLED:${config.trailingEnabled?"ON":"OFF"} IMM:${config.trailImmediately?"ON":"OFF"}\nSTART:${config.trailStartTicks} STEP:${config.trailStepTicks}\n\n`;
+        message += `💲 RISK/REWARD\nRISK:$${config.riskLimit} REWARD:$${config.rewardLimit}\n\n`;
+        message += `💲 MARKET\nSPREAD:${config.spreadControl?"ON max="+config.maxSpreadTicks:"OFF"}\nHOURS:${config.enableMarketHours?`ON ${config.startHour}:${String(config.startMinute).padStart(2,'0')}-${config.endHour}:${String(config.endMinute).padStart(2,'0')}`:"OFF"}\n\n`;
+        message += `💲 EXITS\nGRIDFILL:${config.gridfillExit?"ON":"OFF"} ORIGIN:${config.exitOriginReturn?"ON":"OFF"} EQUAL:${config.exitEqualOrders?"ON":"OFF"}\n\n`;
+        message += `💲 HALT\nGRIDFILL:${config.haltGridfill?"ON":"OFF"} TP:${config.haltTP?"ON":"OFF"} SL:${config.haltSL?"ON":"OFF"}\nREWARD:${config.haltRewardLimit?"ON":"OFF"} RISK:${config.haltRiskLimit?"ON":"OFF"} TRAIL:${config.haltTrail?"ON":"OFF"}\nEQUAL:${config.haltEqual?"ON":"OFF"} ORIGIN:${config.haltOrigin?"ON":"OFF"}\n\n`;
+        message += `💲 RE-ENTRY\nENABLED:${config.reentryTimeout?"ON":"OFF"} SECONDS:${config.reentryTimeoutSec}\n\n`;
+        message += `💲 DISPLAY\nDASHBOARD:${config.showDashboard?"ON":"OFF"}\n\n`;
+        message += `💲 MIDTRADE ADJUST: ${config.allowMidtradeAdjust?"ALLOWED":"DISABLED"}`;
+        return message;
+    }
+
+    const deployBtn = document.getElementById("deploySpiderBtn");
+    const spinnerWebLeft = document.getElementById("spinnerWebLeft");
+    const spinnerWebRight = document.getElementById("spinnerWebRight");
+    const btnText = document.getElementById("btnText");
+    const statusDiv = document.getElementById("deployStatus");
+    const originalBtnTextContent = btnText.innerHTML;
+
+    deployBtn.addEventListener("click", async function(){
+        const accountConfirmed = document.getElementById("acceptAccount").checked;
+        const brokerConfirmed = document.getElementById("acceptBroker").checked;
+        const riskAccept = document.getElementById("acceptRisk").checked;
+        
+        if(!accountConfirmed || !brokerConfirmed || !riskAccept){
+            statusDiv.innerHTML = '<span style="color:#ff6666">💲 MUST CONFIRM ACCOUNT, BROKER & ACCEPT RISK 💲</span>';
+            return;
+        }
+
+        deployBtn.disabled = true;
+        spinnerWebLeft.style.display = 'inline-block';
+        spinnerWebRight.style.display = 'inline-block';
+        btnText.innerHTML = ' spinning web ';
+        statusDiv.innerHTML = '';
+
+        const config = getFullConfig();
+        const message = formatConfigMessage(config);
+        
+        console.log("Sending config:", message);
+
+        try {
+            const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({chat_id: TELEGRAM_CHAT_ID, text: message})
+            });
+            const data = await response.json();
+            if(data.ok) {
+                statusDiv.innerHTML = '<span class="status-success">✅ Config shipped successfully</span>';
+            } else {
+                console.error("Telegram error:", data);
+                statusDiv.innerHTML = '<span style="color:#ff6666">💲 TELEGRAM ERROR · CONFIG NOT RECEIVED 💲</span>';
+            }
+        } catch(err) {
+            console.error(err);
+            statusDiv.innerHTML = '<span style="color:#ff6666">💲 NETWORK ERROR · SPIDER FAILED 💲</span>';
+        } finally {
+            deployBtn.disabled = false;
+            spinnerWebLeft.style.display = 'none';
+            spinnerWebRight.style.display = 'none';
+            btnText.innerHTML = originalBtnTextContent;
+            setTimeout(() => {
+                if(statusDiv.innerHTML === '<span class="status-success">✅ Config shipped successfully</span>') {
+                    setTimeout(() => { statusDiv.innerHTML = ''; }, 3000);
+                }
+            }, 2000);
+        }
+    });
+
+    initTooltips();
+</script>
+</body>
+</html>
